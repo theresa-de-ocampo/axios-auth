@@ -29,22 +29,29 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL,
+            let response = await axios.post(LOGIN_URL,
                 {
                     identifier: username,
                     password: password
                 }
             );
-            console.log(JSON.stringify(response));
-            const jwt = response.data.jwt
-            setAuth({username, password, jwt});
+            const jwt = response.data.jwt;
+
+            response = await axios.get("/users/me", {
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                }
+            });
+            console.log(response);
+            const role = response.data.role.name;
+
+            setAuth({username, password, jwt, role});
             setUsername("");
             setPassword("");
-            console.log(from);
             navigate(from, {replace: true});
         }
         catch (error) {
-            console.log("im at catch");
+            console.log(error);
             if (!error?.response)
                 setErrorMessage("No Server Response");
             else if (error.response?.status === 400)
