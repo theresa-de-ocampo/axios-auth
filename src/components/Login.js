@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login() {
     const { setAuth } = useAuth();
@@ -42,8 +42,8 @@ export default function Login() {
                     Authorization: `Bearer ${jwt}`
                 }
             });
-            console.log(response);
             const role = response.data.role.name;
+            console.log(response);
 
             setAuth({username, password, jwt, role});
             setUsername("");
