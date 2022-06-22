@@ -11,11 +11,13 @@ export default function useRefreshToken() {
                 Authorization: `Bearer ${auth.jwt}`
             }
         });
+
         setAuth(prev => {
             console.log(JSON.stringify(prev));
             console.log(response.data.jwt);
             return { ...prev, jwt: response.data.jwt }
         });
+        
         return response.data.accessToken;
     }
 

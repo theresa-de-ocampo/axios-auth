@@ -1,10 +1,13 @@
 import React from "react";
 import axios from "../api/axios";
-import useRefreshToken from "../hooks/useRefreshToken";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Users() {
     const [users, setUsers] = React.useState();
-    const refresh = useRefreshToken();
+    const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     React.useEffect(() => {
         let isMounted = true;
@@ -14,12 +17,12 @@ export default function Users() {
         // if the component unmounts.
         async function getUsers() {
             try {
-                const response = await axios.get("/users", {signal: controller.signal});
-                console.log(response.data);
+                const response = await axiosPrivate.get("/users", {signal: controller.signal});
                 isMounted && setUsers(response.data);
             }
             catch (error) {
                 console.error(error);
+                navigate("/login", { state: { from: location }, replace: true})
             }
         }
 
@@ -38,13 +41,11 @@ export default function Users() {
                 users?.length ?
                 (
                     <ul>
-                        {users.map(user => <li key={user.id}>user.username</li>)}
+                        {users.map(user => <li key={user.id}>{user.username}</li>)}
                     </ul>
                 ) :
                 <p>No users to display.</p>
             }
-            <button onClick={() => refresh()}>Refresh</button>
-            <br />
         </article>
     )
 }
